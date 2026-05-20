@@ -28,7 +28,8 @@ This guide deploys **Pulseboard Analytics** with:
 1. Push the repo to GitHub.
 2. In Render: **New → Blueprint**.
 3. Connect the repository and select `render.yaml` at the repo root.
-4. Render creates: Postgres, Redis, API, Celery worker, Celery Beat.
+4. Render creates: Postgres, Redis (Key Value), API, Celery worker, Celery Beat.
+   - If blueprint validation fails on Redis, ensure `render.yaml` includes `ipAllowList: []` on the Redis service.
 5. After the API service is created, open **pulseboard-api → Environment** and set:
 
 | Variable | Example |

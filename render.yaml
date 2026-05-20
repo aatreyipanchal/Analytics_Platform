@@ -29,7 +29,7 @@ services:
       - key: REDIS_URL
         fromService:
           name: pulseboard-redis
-          type: redis
+          type: keyvalue
           property: connectionString
       - key: FRONTEND_URL
         sync: false
@@ -52,7 +52,7 @@ services:
       - key: REDIS_URL
         fromService:
           name: pulseboard-redis
-          type: redis
+          type: keyvalue
           property: connectionString
       - key: SECRET_KEY
         fromService:
@@ -78,7 +78,7 @@ services:
       - key: REDIS_URL
         fromService:
           name: pulseboard-redis
-          type: redis
+          type: keyvalue
           property: connectionString
       - key: SECRET_KEY
         fromService:
@@ -88,10 +88,12 @@ services:
       - key: CELERY_TASK_ALWAYS_EAGER
         value: "false"
 
-  - type: redis
+  - type: keyvalue
     name: pulseboard-redis
     plan: free
     maxmemoryPolicy: allkeys-lru
+    # Required by Render — empty list = internal Render services only (API + workers)
+    ipAllowList: []
 
 databases:
   - name: pulseboard-db
