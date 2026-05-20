@@ -111,7 +111,12 @@ class Settings(BaseSettings):
     def sqlalchemy_sync_database_uri(self) -> str:
         return build_sync_database_url(**self._db_url_kwargs()).render_as_string(hide_password=False)
 
-    model_config = SettingsConfigDict(env_file=".env", case_sensitive=True, extra="ignore")
+    model_config = SettingsConfigDict(
+        # Never load local .env on Render/production (prevents localhost override)
+        env_file=".env" if __import__("os").getenv("ENVIRONMENT", "development") != "production" else None,
+        case_sensitive=True,
+        extra="ignore",
+    )
 
 
 settings = Settings()

@@ -4,10 +4,10 @@ from sqlalchemy.engine import URL, make_url
 
 
 def _needs_ssl(database_url: str | None, environment: str) -> bool:
+    """Only external Render URLs need SSL. Internal hostnames (dpg-xxx-a) use plain TCP."""
     if environment != "production" or not database_url:
         return False
-    url = database_url.lower()
-    return "render.com" in url or "dpg-" in url
+    return "render.com" in database_url.lower()
 
 
 def build_async_database_url(

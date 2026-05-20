@@ -25,11 +25,21 @@ logger = get_logger(__name__)
 
 @asynccontextmanager
 async def lifespan(_: FastAPI):
+    logger.info(
+        "startup_config",
+        environment=settings.ENVIRONMENT,
+        has_database_url=bool(settings.DATABASE_URL),
+        auto_create_tables=settings.AUTO_CREATE_TABLES,
+        run_migrations=settings.RUN_MIGRATIONS_ON_STARTUP,
+    )
+
+    # Production: schema is created by `scripts/start.sh` (alembic). Do not connect here.
     if settings.RUN_MIGRATIONS_ON_STARTUP:
         run_migrations()
-    elif settings.AUTO_CREATE_TABLES:
+    elif settings.AUTO_CREATE_TABLES and settings.ENVIRONMENT == "development":
         async with engine.begin() as connection:
             await connection.run_sync(Base.metadata.create_all)
+
     logger.info("app_started", environment=settings.ENVIRONMENT, version=settings.VERSION)
     yield
     await engine.dispose()
