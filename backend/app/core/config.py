@@ -3,7 +3,7 @@ from typing import Literal
 
 from pydantic import Field, field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
-from sqlalchemy.engine import URL
+from sqlalchemy.engine import URL, make_url
 
 
 class Settings(BaseSettings):
@@ -81,29 +81,33 @@ class Settings(BaseSettings):
         return self.ENVIRONMENT == "production"
 
     @cached_property
-    def sqlalchemy_database_uri(self) -> str:
+    def sqlalchemy_database_url(self) -> URL:
+        """SQLAlchemy URL object — safe for passwords containing @, #, etc."""
         if self.DATABASE_URL:
             url = self.DATABASE_URL
             if url.startswith("postgres://"):
                 url = url.replace("postgres://", "postgresql+asyncpg://", 1)
             elif url.startswith("postgresql://") and "+asyncpg" not in url:
                 url = url.replace("postgresql://", "postgresql+asyncpg://", 1)
-            return url
-        return str(
-            URL.create(
-                "postgresql+asyncpg",
-                username=self.POSTGRES_USER,
-                password=self.POSTGRES_PASSWORD,
-                host=self.POSTGRES_SERVER,
-                port=self.POSTGRES_PORT,
-                database=self.POSTGRES_DB,
-            )
+            return make_url(url)
+        return URL.create(
+            "postgresql+asyncpg",
+            username=self.POSTGRES_USER,
+            password=self.POSTGRES_PASSWORD,
+            host=self.POSTGRES_SERVER,
+            port=self.POSTGRES_PORT,
+            database=self.POSTGRES_DB,
         )
 
     @cached_property
+    def sqlalchemy_database_uri(self) -> str:
+        # Must use render_as_string — str(URL) does not URL-encode special chars in password
+        return self.sqlalchemy_database_url.render_as_string(hide_password=False)
+
+    @cached_property
     def sqlalchemy_sync_database_uri(self) -> str:
-        uri = self.sqlalchemy_database_uri
-        return uri.replace("postgresql+asyncpg://", "postgresql://")
+        sync_url = self.sqlalchemy_database_url.set(drivername="postgresql")
+        return sync_url.render_as_string(hide_password=False)
 
     model_config = SettingsConfigDict(env_file=".env", case_sensitive=True, extra="ignore")
 
