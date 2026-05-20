@@ -5,6 +5,7 @@ services:
   - type: web
     name: pulseboard-api
     runtime: python
+    region: oregon
     rootDir: backend
     buildCommand: pip install -r requirements.txt
     startCommand: bash scripts/start.sh
@@ -39,6 +40,7 @@ services:
   - type: worker
     name: pulseboard-celery-worker
     runtime: python
+    region: oregon
     rootDir: backend
     buildCommand: pip install -r requirements.txt
     startCommand: celery -A app.workers.celery_app worker --loglevel=info
@@ -65,6 +67,7 @@ services:
   - type: worker
     name: pulseboard-celery-beat
     runtime: python
+    region: oregon
     rootDir: backend
     buildCommand: pip install -r requirements.txt
     startCommand: celery -A app.workers.celery_app beat --loglevel=info
@@ -90,6 +93,7 @@ services:
 
   - type: keyvalue
     name: pulseboard-redis
+    region: oregon
     plan: free
     maxmemoryPolicy: allkeys-lru
     # Required by Render — empty list = internal Render services only (API + workers)
@@ -97,6 +101,8 @@ services:
 
 databases:
   - name: pulseboard-db
+    region: oregon
     plan: free
     databaseName: pulseboard
     user: pulseboard
+    ipAllowList: []

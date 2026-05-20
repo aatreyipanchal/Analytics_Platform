@@ -166,6 +166,8 @@ npm run dev
 | Alerts never fire | Ensure Beat worker is running; check `error_logged` event count |
 | WebSocket disconnects | Render supports WS; confirm `NEXT_PUBLIC_WS_BASE_URL` uses `wss://` |
 | DB connection errors | Use Render internal DB URL for workers in same region |
+| `Connection refused` on startup | `DATABASE_URL` missing on the web service — link Postgres in Render env; ensure API, workers, and DB are same **region** (e.g. Oregon); redeploy after DB is **Available** |
+| No open ports detected | App crashed before binding — fix DB connection first; check logs above the port warning |
 
 ---
 

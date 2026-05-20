@@ -3,7 +3,9 @@ from typing import Literal
 
 from pydantic import Field, field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
-from sqlalchemy.engine import URL, make_url
+from sqlalchemy.engine import URL
+
+from app.core.database_url import build_async_database_url, build_sync_database_url
 
 
 class Settings(BaseSettings):
@@ -73,41 +75,41 @@ class Settings(BaseSettings):
             object.__setattr__(self, "REFRESH_COOKIE_SAMESITE", "none")
             object.__setattr__(self, "AUTO_CREATE_TABLES", False)
             object.__setattr__(self, "CELERY_TASK_ALWAYS_EAGER", False)
-            object.__setattr__(self, "RUN_MIGRATIONS_ON_STARTUP", True)
+            # Migrations run in scripts/start.sh on Render (with retries)
+            object.__setattr__(self, "RUN_MIGRATIONS_ON_STARTUP", False)
+            if not self.DATABASE_URL:
+                raise ValueError(
+                    "DATABASE_URL must be set in production. "
+                    "Link the Render Postgres database to this service in the dashboard."
+                )
         return self
 
     @cached_property
     def is_production(self) -> bool:
         return self.ENVIRONMENT == "production"
 
+    def _db_url_kwargs(self) -> dict:
+        return {
+            "database_url": self.DATABASE_URL,
+            "environment": self.ENVIRONMENT,
+            "postgres_user": self.POSTGRES_USER,
+            "postgres_password": self.POSTGRES_PASSWORD,
+            "postgres_server": self.POSTGRES_SERVER,
+            "postgres_port": self.POSTGRES_PORT,
+            "postgres_db": self.POSTGRES_DB,
+        }
+
     @cached_property
     def sqlalchemy_database_url(self) -> URL:
-        """SQLAlchemy URL object — safe for passwords containing @, #, etc."""
-        if self.DATABASE_URL:
-            url = self.DATABASE_URL
-            if url.startswith("postgres://"):
-                url = url.replace("postgres://", "postgresql+asyncpg://", 1)
-            elif url.startswith("postgresql://") and "+asyncpg" not in url:
-                url = url.replace("postgresql://", "postgresql+asyncpg://", 1)
-            return make_url(url)
-        return URL.create(
-            "postgresql+asyncpg",
-            username=self.POSTGRES_USER,
-            password=self.POSTGRES_PASSWORD,
-            host=self.POSTGRES_SERVER,
-            port=self.POSTGRES_PORT,
-            database=self.POSTGRES_DB,
-        )
+        return build_async_database_url(**self._db_url_kwargs())
 
     @cached_property
     def sqlalchemy_database_uri(self) -> str:
-        # Must use render_as_string — str(URL) does not URL-encode special chars in password
         return self.sqlalchemy_database_url.render_as_string(hide_password=False)
 
     @cached_property
     def sqlalchemy_sync_database_uri(self) -> str:
-        sync_url = self.sqlalchemy_database_url.set(drivername="postgresql")
-        return sync_url.render_as_string(hide_password=False)
+        return build_sync_database_url(**self._db_url_kwargs()).render_as_string(hide_password=False)
 
     model_config = SettingsConfigDict(env_file=".env", case_sensitive=True, extra="ignore")
 
