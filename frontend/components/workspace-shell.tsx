@@ -10,6 +10,7 @@ const navItems = [
   { href: "/workspace", label: "Overview" },
   { href: "/workspace/ingestion", label: "Ingestion" },
   { href: "/workspace/dashboards", label: "Dashboards" },
+  { href: "/workspace/alerts", label: "Alerts" },
   { href: "/workspace/team", label: "Team" },
 ];
 

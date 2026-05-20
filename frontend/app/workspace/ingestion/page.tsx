@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 
 import { apiRequest, getApiBase, getStoredToken } from "@/lib/api";
 import { ApiKey, EventRecord, User } from "@/lib/types";
+import { openOrgEventsSocket } from "@/lib/ws";
 
 type Notice = {
   tone: "info" | "success" | "error";
@@ -69,6 +70,11 @@ export default function IngestionPage() {
     }
 
     void load();
+
+    const socket = openOrgEventsSocket(stored, () => {
+      void refreshEvents(stored);
+    });
+    return () => socket.close();
   }, [router]);
 
   async function refreshEvents(currentToken = token) {

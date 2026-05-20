@@ -72,6 +72,31 @@ export type EventRecord = {
   properties: Record<string, unknown>;
 };
 
+export type Alert = {
+  id: number;
+  organization_id: number;
+  name: string;
+  event_name: string;
+  threshold: number;
+  window_minutes: number;
+  status: "active" | "triggered" | "resolved" | "muted";
+  muted_until: string | null;
+  webhook_url: string | null;
+  notify_email: string | null;
+  created_at: string;
+};
+
+export type Notification = {
+  id: number;
+  organization_id: number;
+  user_id: number | null;
+  title: string;
+  message: string;
+  read: boolean;
+  alert_id: number | null;
+  created_at: string;
+};
+
 export type DashboardTemplate = {
   slug: string;
   name: string;

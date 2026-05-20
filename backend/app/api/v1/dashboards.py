@@ -18,6 +18,7 @@ from app.schemas.dashboard import (
     WidgetInDB,
     WidgetQueryResult,
 )
+from app.services.cache import get_cached_json, set_cached_json
 
 router = APIRouter()
 
@@ -250,10 +251,16 @@ async def get_dashboard_data(
     current_user: User = Depends(deps.get_current_active_user),
     db: AsyncSession = Depends(deps.get_db),
 ) -> list[WidgetQueryResult]:
+    cache_key = f"dashboard:{current_user.organization_id}:{dashboard_id}:{hours}"
+    cached = await get_cached_json(cache_key)
+    if cached is not None:
+        return [WidgetQueryResult.model_validate(item) for item in cached]
+
     dashboard = await _get_dashboard_for_user(db, dashboard_id, current_user)
     results: list[WidgetQueryResult] = []
     for widget in sorted(dashboard.widgets, key=lambda item: item.position):
         results.append(await _build_widget_data(db, widget, current_user.organization_id, hours))
+    await set_cached_json(cache_key, [item.model_dump(mode="json") for item in results])
     return results
 
 

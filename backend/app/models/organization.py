@@ -17,3 +17,5 @@ class Organization(Base):
     dashboards = relationship("Dashboard", back_populates="organization")
     api_keys = relationship("ApiKey", back_populates="organization", cascade="all, delete-orphan")
     invitations = relationship("Invitation", back_populates="organization", cascade="all, delete-orphan")
+    alerts = relationship("Alert", back_populates="organization", cascade="all, delete-orphan")
+    notifications = relationship("Notification", back_populates="organization", cascade="all, delete-orphan")

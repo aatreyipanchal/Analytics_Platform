@@ -73,6 +73,17 @@ export default function DashboardsPage() {
     void load();
   }, [router]);
 
+  useEffect(() => {
+    if (!token || !selectedId || !selectedDashboard) {
+      return;
+    }
+    const intervalMs = Math.max((selectedDashboard.refresh_interval_seconds || 60) * 1000, 30_000);
+    const timer = window.setInterval(() => {
+      void loadWidgetData(selectedId, token, rangeHours);
+    }, intervalMs);
+    return () => window.clearInterval(timer);
+  }, [token, selectedId, selectedDashboard, rangeHours]);
+
   async function refreshDashboards(currentToken = token) {
     if (!currentToken) {
       return;

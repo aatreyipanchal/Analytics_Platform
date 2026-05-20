@@ -39,14 +39,19 @@ def _set_refresh_cookie(response: Response, refresh_token: str) -> None:
         value=refresh_token,
         httponly=True,
         secure=settings.REFRESH_COOKIE_SECURE,
-        samesite="lax",
+        samesite=settings.REFRESH_COOKIE_SAMESITE,
         max_age=settings.REFRESH_TOKEN_EXPIRE_DAYS * 24 * 60 * 60,
         path="/",
     )
 
 
 def _clear_refresh_cookie(response: Response) -> None:
-    response.delete_cookie(key=settings.REFRESH_COOKIE_NAME, path="/")
+    response.delete_cookie(
+        key=settings.REFRESH_COOKIE_NAME,
+        path="/",
+        secure=settings.REFRESH_COOKIE_SECURE,
+        samesite=settings.REFRESH_COOKIE_SAMESITE,
+    )
 
 
 def _slugify(name: str) -> str:

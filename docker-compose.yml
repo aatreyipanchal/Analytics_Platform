@@ -27,6 +27,9 @@ services:
     environment:
       - POSTGRES_SERVER=postgres
       - REDIS_URL=redis://redis:6379/0
+      - ENVIRONMENT=development
+      - AUTO_CREATE_TABLES=true
+      - CELERY_TASK_ALWAYS_EAGER=false
     depends_on:
       - postgres
       - redis
@@ -39,9 +42,22 @@ services:
     environment:
       - POSTGRES_SERVER=postgres
       - REDIS_URL=redis://redis:6379/0
+      - CELERY_TASK_ALWAYS_EAGER=false
     depends_on:
       - backend
       - redis
+
+  celery_beat:
+    build: ./backend
+    command: celery -A app.workers.celery_app beat --loglevel=info
+    volumes:
+      - ./backend:/app
+    environment:
+      - POSTGRES_SERVER=postgres
+      - REDIS_URL=redis://redis:6379/0
+    depends_on:
+      - redis
+      - celery_worker
 
   frontend:
     build: ./frontend
