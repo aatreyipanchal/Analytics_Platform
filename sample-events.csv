@@ -1,0 +1,6 @@
+event_name,timestamp,user_id,properties
+signup_completed,2026-05-20T10:30:00+00:00,user_1,"{""source"":""landing-page"",""plan"":""pro"",""campaign"":""launch-week""}"
+page_view,2026-05-20T10:35:00+00:00,user_1,"{""path"":""/pricing"",""referrer"":""google""}"
+purchase_completed,2026-05-20T10:40:00+00:00,user_1,"{""amount"":1200,""currency"":""USD""}"
+signup_completed,2026-05-20T11:00:00+00:00,user_2,"{""source"":""invite-flow"",""plan"":""starter""}"
+error_logged,2026-05-20T11:10:00+00:00,user_2,"{""severity"":""warning"",""service"":""api""}"
