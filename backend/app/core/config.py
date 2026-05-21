@@ -70,7 +70,9 @@ class Settings(BaseSettings):
 
     @model_validator(mode="after")
     def apply_production_defaults(self) -> "Settings":
-        if self.ENVIRONMENT == "production":
+        import os
+        is_render = os.getenv("RENDER") == "true"
+        if self.ENVIRONMENT == "production" or is_render:
             object.__setattr__(self, "REFRESH_COOKIE_SECURE", True)
             object.__setattr__(self, "REFRESH_COOKIE_SAMESITE", "none")
             object.__setattr__(self, "AUTO_CREATE_TABLES", False)

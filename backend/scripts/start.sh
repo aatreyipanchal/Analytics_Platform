@@ -4,9 +4,11 @@ cd "$(dirname "$0")/.."
 
 echo "Starting Pulseboard API (ENVIRONMENT=${ENVIRONMENT:-development})"
 
-if [ "${ENVIRONMENT:-development}" = "production" ] && [ -z "${DATABASE_URL:-}" ]; then
-  echo "ERROR: DATABASE_URL is not set. Link pulseboard-db to this service in Render."
-  exit 1
+if [ "${RENDER:-false}" = "true" ] || [ "${ENVIRONMENT:-development}" = "production" ]; then
+  if [ -z "${DATABASE_URL:-}" ]; then
+    echo "ERROR: DATABASE_URL is not set. Link pulseboard-db to this service in Render."
+    exit 1
+  fi
 fi
 
 if [ "${RUN_MIGRATIONS_ON_STARTUP:-true}" = "true" ]; then
