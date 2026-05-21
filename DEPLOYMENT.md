@@ -39,12 +39,12 @@ This guide deploys **Pulseboard Analytics** with:
 
 | Variable | Example |
 |----------|---------|
-| `FRONTEND_URL` | `https://your-app.vercel.app` |
-| `BACKEND_CORS_ORIGINS` | `["https://your-app.vercel.app"]` |
+| `FRONTEND_URL` | `https://analytics-platform-bay.vercel.app` |
+| `BACKEND_CORS_ORIGINS` | `["https://analytics-platform-bay.vercel.app"]` |
 
 Use JSON array syntax for `BACKEND_CORS_ORIGINS` (required for credentials/cookies).
 
-6. Copy the API URL, e.g. `https://pulseboard-api.onrender.com`.
+6. Production API URL: `https://analytics-platform-2-kpih.onrender.com` (Render service name may differ from blueprint `pulseboard-api`).
 
 ### Option B: Manual services
 
@@ -63,17 +63,17 @@ Use JSON array syntax for `BACKEND_CORS_ORIGINS` (required for credentials/cooki
      RUN_MIGRATIONS_ON_STARTUP=true
      AUTO_CREATE_TABLES=false
      CELERY_TASK_ALWAYS_EAGER=false
-     FRONTEND_URL=https://your-app.vercel.app
-     BACKEND_CORS_ORIGINS=["https://your-app.vercel.app"]
+     FRONTEND_URL=https://analytics-platform-bay.vercel.app
+     BACKEND_CORS_ORIGINS=["https://analytics-platform-bay.vercel.app"]
      ```
 4. **Background Worker** — Root `backend`, start: `celery -A app.workers.celery_app worker --loglevel=info`, same `DATABASE_URL`, `REDIS_URL`, `SECRET_KEY`.
 5. **Background Worker (Beat)** — Same env, start: `celery -A app.workers.celery_app beat --loglevel=info`.
 
 ### Verify backend
 
-- Health: `GET https://<api-host>/health`
-- Metrics: `GET https://<api-host>/metrics`
-- Docs: `https://<api-host>/docs`
+- Health: https://analytics-platform-2-kpih.onrender.com/health
+- Metrics: https://analytics-platform-2-kpih.onrender.com/metrics
+- Docs: https://analytics-platform-2-kpih.onrender.com/docs
 
 ### Render notes
 
@@ -112,7 +112,7 @@ After Vercel deploy, update Render `FRONTEND_URL` and `BACKEND_CORS_ORIGINS` if 
 
 ## Part 3 — Smoke test production
 
-1. Open `https://your-app.vercel.app`
+1. Open https://analytics-platform-bay.vercel.app/
 2. Sign up → create organization
 3. **Ingestion** → create API key → submit sample event
 4. **Dashboards** → create dashboard + widget matching `signup_completed`

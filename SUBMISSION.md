@@ -12,21 +12,28 @@
 | **Application** | https://analytics-platform-bay.vercel.app/ |
 | **API** | https://analytics-platform-2-kpih.onrender.com |
 | **Swagger** | https://analytics-platform-2-kpih.onrender.com/docs |
+| **Health** | https://analytics-platform-2-kpih.onrender.com/health |
+| **Metrics** | https://analytics-platform-2-kpih.onrender.com/metrics |
+
+**API base (all REST routes):** `https://analytics-platform-2-kpih.onrender.com/api/v1`  
+**WebSocket base:** `wss://analytics-platform-2-kpih.onrender.com/api/v1`
 
 ### 3-minute evaluation path
 
-1. Sign up with any email (creates organization + Owner role).
-2. **Ingestion** → create API key → submit the built-in sample event or upload `sample-events.csv`.
-3. **Dashboards** → “Use template” (Web Analytics) or add a widget with event name `signup_completed`.
-4. **Alerts** → optional: create threshold on `error_logged`.
-5. **Team** → generate invite link.
+1. Open https://analytics-platform-bay.vercel.app/ — sign up with any email (creates organization + Owner role).
+2. **Ingestion** (https://analytics-platform-bay.vercel.app/workspace/ingestion) → create API key → submit the built-in sample event or upload `sample-events.csv`.
+3. **Dashboards** (https://analytics-platform-bay.vercel.app/workspace/dashboards) → “Use template” (Web Analytics) or add a widget with event name `signup_completed`.
+4. **Alerts** (https://analytics-platform-bay.vercel.app/workspace/alerts) → optional: create threshold on `error_logged`.
+5. **Team** (https://analytics-platform-bay.vercel.app/workspace/team) → generate invite link.
 
-Automated API smoke test (from repo root):
+Automated API smoke test against production (from repo root):
 
 ```bash
 pip install httpx
 python backend/scripts/smoke_test_live.py
 ```
+
+The script hits `https://analytics-platform-2-kpih.onrender.com` (health, signup, login, dashboards, alerts). Override with `SMOKE_API_BASE` / `SMOKE_ROOT` if needed.
 
 ---
 
@@ -46,6 +53,13 @@ See **[REQUIREMENTS.md](./REQUIREMENTS.md)** for a line-by-line matrix against t
 - Redis for rate limits, dashboard cache, and WebSocket pub/sub  
 - Structured logging with correlation IDs  
 - Monorepo with Render blueprint + Vercel frontend  
+
+**Production CORS (Render `pulseboard-api` / `analytics-platform-2-kpih`):**
+
+```env
+FRONTEND_URL=https://analytics-platform-bay.vercel.app
+BACKEND_CORS_ORIGINS=["https://analytics-platform-bay.vercel.app"]
+```
 
 ---
 
