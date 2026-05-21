@@ -1,6 +1,6 @@
 # Pulseboard Analytics
 
-Multi-tenant real-time analytics platform (Senior Full Stack Engineer assessment).
+Multi-tenant real-time analytics platform (AI Engineer assessment).
 
 ## Live demo
 

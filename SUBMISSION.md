@@ -1,4 +1,4 @@
-# Submission — Senior Full Stack Engineer Assessment
+# Submission — AI Engineer Assessment
 
 **Candidate project:** Pulseboard Analytics  
 **Stack:** FastAPI · PostgreSQL · Celery · Redis · Next.js 14 · TypeScript
