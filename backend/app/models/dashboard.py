@@ -33,7 +33,7 @@ class Widget(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     dashboard_id = Column(Integer, ForeignKey("dashboards.id"), nullable=False)
-    type = Column(Enum(WidgetType), nullable=False)
+    type = Column(Enum(WidgetType, values_callable=lambda obj: [e.value for e in obj]), nullable=False)
     title = Column(String, nullable=False)
     position = Column(Integer, default=0, nullable=False)
     configuration = Column(JSONB, nullable=False)

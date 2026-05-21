@@ -23,7 +23,7 @@ class Alert(Base):
     event_name = Column(String, nullable=False, index=True)
     threshold = Column(Float, nullable=False)
     window_minutes = Column(Integer, default=10, nullable=False)
-    status = Column(Enum(AlertStatus), default=AlertStatus.ACTIVE, nullable=False)
+    status = Column(Enum(AlertStatus, values_callable=lambda obj: [e.value for e in obj]), default=AlertStatus.ACTIVE, nullable=False)
     muted_until = Column(DateTime(timezone=True), nullable=True)
     webhook_url = Column(String, nullable=True)
     notify_email = Column(String, nullable=True)
