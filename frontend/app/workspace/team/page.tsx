@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
+import { LoadingSpinner } from "@/components/loading-spinner";
 import { apiRequest, getStoredToken } from "@/lib/api";
 import { Invitation, User } from "@/lib/types";
 
@@ -66,7 +67,7 @@ export default function TeamPage() {
   }
 
   if (loading) {
-    return <div className="p-8 text-sm text-stone-500">Loading team access...</div>;
+    return <LoadingSpinner label="Loading team access" />;
   }
 
   return (

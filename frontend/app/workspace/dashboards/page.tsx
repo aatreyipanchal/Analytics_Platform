@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 
+import { LoadingSpinner } from "@/components/loading-spinner";
 import { WidgetPanel } from "@/components/widget-panel";
 import { apiRequest, getApiBase, getStoredToken } from "@/lib/api";
 import { Dashboard, DashboardTemplate, Widget, WidgetData } from "@/lib/types";
@@ -177,7 +178,7 @@ export default function DashboardsPage() {
   }
 
   if (loading) {
-    return <div className="p-8 text-sm text-stone-500">Loading dashboards...</div>;
+    return <LoadingSpinner label="Loading dashboards" />;
   }
 
   return (

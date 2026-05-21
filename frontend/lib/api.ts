@@ -45,11 +45,26 @@ function extractErrorMessage(payload: ErrorPayload) {
   return null;
 }
 
+/** FastAPI redirects collection roots without a trailing slash (307). */
+function normalizePath(path: string): string {
+  if (path.endsWith("/")) {
+    return path;
+  }
+  const [base, query] = path.split("?", 2);
+  const collectionRoots = new Set(["/dashboards", "/alerts", "/events"]);
+  if (collectionRoots.has(base)) {
+    const normalized = `${base}/`;
+    return query ? `${normalized}?${query}` : normalized;
+  }
+  return path;
+}
+
 export async function apiRequest<T>(
   path: string,
   options: RequestInit = {},
   accessToken?: string | null,
 ): Promise<T> {
+  const normalizedPath = normalizePath(path);
   const headers = new Headers(options.headers);
   if (!headers.has("Content-Type") && options.body && !(options.body instanceof FormData)) {
     headers.set("Content-Type", "application/json");
@@ -60,7 +75,7 @@ export async function apiRequest<T>(
 
   let response: Response;
   try {
-    response = await fetch(`${API_BASE}${path}`, {
+    response = await fetch(`${API_BASE}${normalizedPath}`, {
       ...options,
       headers,
       credentials: "include",

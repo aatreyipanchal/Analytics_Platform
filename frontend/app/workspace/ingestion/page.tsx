@@ -3,6 +3,7 @@
 import { ChangeEvent, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 
+import { LoadingSpinner } from "@/components/loading-spinner";
 import { apiRequest, getApiBase, getStoredToken } from "@/lib/api";
 import { ApiKey, EventRecord, User } from "@/lib/types";
 import { openOrgEventsSocket } from "@/lib/ws";
@@ -181,7 +182,7 @@ export default function IngestionPage() {
   }
 
   if (loading) {
-    return <div className="p-8 text-sm text-stone-500">Loading ingestion controls...</div>;
+    return <LoadingSpinner label="Loading ingestion controls" />;
   }
 
   return (

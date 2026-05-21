@@ -1,5 +1,10 @@
 # Deployment Guide — Render (Backend) + Vercel (Frontend)
 
+**Current production deployment:**
+
+- Frontend: https://analytics-platform-bay.vercel.app/
+- Backend: https://analytics-platform-2-kpih.onrender.com
+
 This guide deploys **Pulseboard Analytics** with:
 
 | Component | Platform | Service name (blueprint) |
@@ -87,8 +92,8 @@ Use JSON array syntax for `BACKEND_CORS_ORIGINS` (required for credentials/cooki
 
 | Name | Value |
 |------|--------|
-| `NEXT_PUBLIC_API_BASE_URL` | `https://pulseboard-api.onrender.com/api/v1` |
-| `NEXT_PUBLIC_WS_BASE_URL` | `wss://pulseboard-api.onrender.com/api/v1` |
+| `NEXT_PUBLIC_API_BASE_URL` | `https://analytics-platform-2-kpih.onrender.com/api/v1` |
+| `NEXT_PUBLIC_WS_BASE_URL` | `wss://analytics-platform-2-kpih.onrender.com/api/v1` |
 
 5. Deploy.
 

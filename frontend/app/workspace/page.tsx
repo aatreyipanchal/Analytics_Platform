@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
+import { LoadingSpinner } from "@/components/loading-spinner";
 import { apiRequest, clearStoredToken, getStoredToken, refreshAccessToken, setStoredToken } from "@/lib/api";
 import { ApiKey, Dashboard, Invitation, Organization, User } from "@/lib/types";
 
@@ -61,7 +62,7 @@ export default function WorkspaceOverviewPage() {
   }, [router]);
 
   if (loading) {
-    return <div className="p-8 text-sm text-stone-500">Loading workspace...</div>;
+    return <LoadingSpinner label="Loading workspace" />;
   }
 
   if (!data) {

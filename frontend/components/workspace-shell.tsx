@@ -40,13 +40,14 @@ export function WorkspaceShell({ children }: PropsWithChildren) {
             </p>
           </div>
 
-          <nav className="mt-8 space-y-2">
+          <nav className="mt-8 space-y-2" aria-label="Workspace navigation">
             {navItems.map((item) => {
               const active = pathname === item.href;
               return (
                 <Link
                   key={item.href}
                   href={item.href}
+                  aria-current={active ? "page" : undefined}
                   className={`block rounded-2xl px-4 py-3 text-sm transition ${
                     active
                       ? "bg-orange-500 text-white"
@@ -65,14 +66,18 @@ export function WorkspaceShell({ children }: PropsWithChildren) {
           </div>
 
           <button
+            type="button"
             className="mt-6 w-full rounded-2xl border border-stone-700 px-4 py-3 text-sm font-medium text-stone-200 transition hover:border-stone-500 hover:bg-stone-900"
             onClick={handleLogout}
+            aria-label="Sign out of workspace"
           >
             Sign out
           </button>
         </aside>
 
-        <main className="flex-1 bg-stone-100 text-stone-900">{children}</main>
+        <main id="workspace-main" className="flex-1 bg-stone-100 text-stone-900" role="main">
+          {children}
+        </main>
       </div>
     </div>
   );
